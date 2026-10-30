@@ -1,0 +1,31 @@
+# Infra for OA_MODE=full. App processes run on the host via `make dev-full`.
+name: openatoms
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment: { POSTGRES_USER: oa, POSTGRES_PASSWORD: oa, POSTGRES_DB: oa }
+    ports: ["5432:5432"]
+    volumes: [pg:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U oa"], interval: 3s, retries: 20 }
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+  s3:
+    # S3-compatible object storage: versitygw (single binary, S3 API over a POSIX dir). Credentials match the
+    # OA_S3_KEY/OA_S3_SECRET defaults. (SeaweedFS was used before; its single-node raft master lost leadership
+    # under load and every PutObject returned 502 — see docs/impl/prod.md. MinIO images are no longer pullable.)
+    image: versity/versitygw:latest
+    command: ["--access", "oaminio", "--secret", "oaminio123", "posix", "/data"]
+    ports: ["9000:7070"]
+    volumes: [s3:/data]
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ["8025:8025", "1025:1025"]
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    profiles: ["llm"]
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    volumes: ["./litellm.yaml:/app/config.yaml:ro"]
+    env_file: [../.env]
+    ports: ["4000:4000"]
+volumes: { pg: {}, s3: {} }

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pomodoro",
+    "passed": true,
+    "status": "done",
+    "build": true,
+    "ui": true,
+    "expect": true,
+    "seconds": 177.9,
+    "chat_id": "a494ebdaa44b4eb59e0354f47467a7ee"
+  },
+  {
+    "id": "counter",
+    "passed": false,
+    "status": "done",
+    "build": true,
+    "ui": true,
+    "expect": false,
+    "seconds": 36.4,
+    "chat_id": "3259dce6c03c4576949c82ad571a874f"
+  },
+  {
+    "id": "landing",
+    "passed": false,
+    "status": "done",
+    "build": false,
+    "ui": true,
+    "expect": false,
+    "seconds": 4.1,
+    "chat_id": "b13c81a4805148a5becefd5f77c2b897"
+  }
+]

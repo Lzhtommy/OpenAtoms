@@ -1,0 +1,25 @@
+# Wildcard cert *.app.openatoms.dev via cert-manager DNS-01; custom domains via on-demand TLS at the gateway tier.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: openatoms
+  name: openatoms
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dns
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [openatoms.dev, "*.app.openatoms.dev"]
+      secretName: openatoms-tls
+  rules:
+    - host: openatoms.dev
+      http:
+        paths:
+          - { path: /api, pathType: Prefix, backend: { service: { name: oa-api, port: { number: 8000 } } } }
+          - { path: /socket.io, pathType: Prefix, backend: { service: { name: oa-api, port: { number: 8000 } } } }
+          - { path: /, pathType: Prefix, backend: { service: { name: oa-web, port: { number: 3000 } } } }
+    - host: "*.app.openatoms.dev"
+      http:
+        paths:
+          - { path: /, pathType: Prefix, backend: { service: { name: oa-gateway, port: { number: 8080 } } } }

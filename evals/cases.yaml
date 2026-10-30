@@ -1,0 +1,22 @@
+# Regression suite for agent quality (PLAN 风险与对策). Each case must: finish, pass `pnpm build`,
+# serve a preview with no console errors (checkui), and contain the expected strings in src/.
+- { id: pomodoro, mode: lite, prompt: "做一个番茄钟页面", expect: ["25"] }
+- { id: todo, mode: lite, prompt: "Build a todo list app with add, complete and delete", expect: ["todo"] }
+- { id: counter, mode: lite, prompt: "A simple counter with increment and reset", expect: ["reset"] }
+- { id: landing, mode: lite, prompt: "Landing page for a coffee shop called Bean There", expect: ["Bean There"] }
+- { id: calculator, mode: lite, prompt: "做一个计算器", expect: [] }
+- { id: weather, mode: lite, prompt: "Weather dashboard with mock data for 5 cities", expect: [] }
+- { id: notes, mode: lite, prompt: "Markdown notes app saved to localStorage", expect: ["localStorage"] }
+- { id: kanban, mode: lite, prompt: "Kanban board with three columns", expect: [] }
+- { id: quiz, mode: lite, prompt: "A 5-question quiz about space with score", expect: [] }
+- { id: portfolio, mode: lite, prompt: "Personal portfolio for a designer named Ana", expect: ["Ana"] }
+- { id: expense, mode: lite, prompt: "Expense tracker with categories and totals", expect: [] }
+- { id: habit, mode: lite, prompt: "Habit tracker for 7 days", expect: [] }
+- { id: recipe, mode: lite, prompt: "Recipe browser with search", expect: [] }
+- { id: chat-ui, mode: lite, prompt: "A chat UI mockup with message bubbles", expect: [] }
+- { id: team-todo, mode: full, prompt: "做一个带登录的待办应用", expect: [] }
+- { id: team-dashboard, mode: full, prompt: "Sales analytics dashboard with charts", expect: [] }
+- { id: team-blog, mode: full, prompt: "A minimal blog with post list and detail pages", expect: [] }
+- { id: guestbook-cloud, mode: full, prompt: "留言板应用，数据存在云数据库里", expect: ["entities"] }
+- { id: ask-human, mode: lite, prompt: "Build a timer, but ask me before choosing colors", expect: [] }
+- { id: clarify, mode: full, prompt: "clarify: build me an internal tool", expect: [] }

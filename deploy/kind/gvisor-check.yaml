@@ -1,0 +1,22 @@
+# scripts/k8s_kind_e2e.sh (OA_KIND_GVISOR=1): sandboxd under RuntimeClass `gvisor` (netstack, as in production),
+# called on its podIP by a runc pod — the way in-cluster api/gateway reach sandboxes.
+apiVersion: v1
+kind: Pod
+metadata: { name: gvisor-check, namespace: default }
+spec:
+  runtimeClassName: gvisor
+  containers:
+    - name: s
+      image: openatoms/sandbox:latest
+      imagePullPolicy: Never
+      command: ["sandboxd", "--listen", ":49999", "--root", "/tmp/ws", "--token", "check"]
+---
+apiVersion: v1
+kind: Pod
+metadata: { name: gvisor-check-client, namespace: default }
+spec:
+  containers:
+    - name: c
+      image: openatoms/sandbox:latest
+      imagePullPolicy: Never
+      command: ["sleep", "600"]

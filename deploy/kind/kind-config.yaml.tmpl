@@ -1,0 +1,9 @@
+# kind cluster for verifying the K8sProvider locally (scripts/k8s_kind_e2e.sh fills in OA_DATA_HOST_DIR).
+# The host-run api and the sandbox pods share one data dir: host dir → kind node /oa-data → hostPath PV → PVC.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: ${OA_DATA_HOST_DIR}
+        containerPath: /oa-data

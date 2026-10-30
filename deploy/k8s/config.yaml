@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: oa-config, namespace: openatoms }
+data:
+  OA_MODE: full
+  OA_STORAGE: s3
+  OA_SANDBOX_PROVIDER: k8s
+  OA_K8S_NAMESPACE: openatoms-sandboxes
+  OA_K8S_RUNTIME_CLASS: gvisor
+  OA_K8S_WORKSPACE_PVC: oa-workspaces
+  OA_DATA_DIR: /data
+  OA_QUEUE: arq
+  OA_APP_DOMAIN: app.openatoms.dev
+  OA_APP_SCHEME: https
+  OA_PUBLIC_WEB_URL: https://openatoms.dev
+  OA_API_URL: http://oa-api.openatoms.svc:8000
+  OA_K8S_ACCESS: cluster
+  OA_SANDBOX_WARM_POOL: "4"          # pre-started idle sandbox pods (oa.sandbox.pool)
+  OA_SANDBOX_MAX_TOTAL: "400"        # admission cap: starts wait instead of overcommitting nodes
+  OA_WORKER_METRICS_PORT: "9108"
+  OA_LOG_FORMAT: json
+---
+# Real values come from your secret manager (ExternalSecrets/SealedSecrets); keys listed for reference.
+apiVersion: v1
+kind: Secret
+metadata: { name: oa-secrets, namespace: openatoms }
+type: Opaque
+stringData:
+  OA_DATABASE_URL: postgresql+asyncpg://oa:CHANGE@postgres:5432/oa
+  OA_REDIS_URL: redis://redis:6379/0
+  OA_JWT_SECRET: CHANGE
+  OA_INTERNAL_TOKEN: CHANGE
+  OA_SECRET_KEY: CHANGE
+  OA_LLM_BASE_URL: http://litellm:4000/v1
+  OA_LLM_API_KEY: CHANGE
+  OA_S3_ENDPOINT: https://s3.amazonaws.com
+  OA_S3_BUCKET: openatoms
+  OA_S3_KEY: CHANGE
+  OA_S3_SECRET: CHANGE
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: { name: oa-workspaces, namespace: openatoms }
+spec:
+  accessModes: [ReadWriteMany]   # JuiceFS / EFS / NFS storage class
+  storageClassName: juicefs-sc
+  resources: { requests: { storage: 1Ti } }
+---
+# PVCs are namespaced: sandbox pods (openatoms-sandboxes) need their own claim on the SAME RWX filesystem the
+# api/worker mount above (JuiceFS static provisioning with the same volumeHandle, or the same EFS access point).
+# Pods mount <claim>/<chats/<id>/workspace> (or pool/<slot>) via subPath.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: { name: oa-workspaces, namespace: openatoms-sandboxes }
+spec:
+  accessModes: [ReadWriteMany]
+  storageClassName: juicefs-sc
+  resources: { requests: { storage: 1Ti } }

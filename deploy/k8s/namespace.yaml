@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata: { name: openatoms }
+---
+apiVersion: v1
+kind: Namespace
+metadata: { name: openatoms-sandboxes, labels: { openatoms.dev/role: sandboxes } }

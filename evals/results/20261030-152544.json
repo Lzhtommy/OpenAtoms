@@ -1,0 +1,42 @@
+[
+  {
+    "id": "counter",
+    "passed": true,
+    "status": "done",
+    "build": true,
+    "ui": true,
+    "expect": true,
+    "seconds": 26.3,
+    "chat_id": "af820cbe5480468586aeda26c5301562"
+  },
+  {
+    "id": "landing",
+    "passed": true,
+    "status": "done",
+    "build": true,
+    "ui": true,
+    "expect": true,
+    "seconds": 184.0,
+    "chat_id": "06049790d1e646a3bdcb62a4c98ef899"
+  },
+  {
+    "id": "team-todo",
+    "passed": true,
+    "status": "done",
+    "build": true,
+    "ui": true,
+    "expect": true,
+    "seconds": 479.2,
+    "chat_id": "875305c0d9604fb39d07a1c2c3f9ecb3"
+  },
+  {
+    "id": "guestbook-cloud",
+    "passed": false,
+    "status": "done",
+    "build": false,
+    "ui": true,
+    "expect": false,
+    "seconds": 4.1,
+    "chat_id": "246921d9946348f583995051f67b3f32"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "name": "openatoms",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @oa/web dev",
+    "build:web": "pnpm --filter @oa/web build",
+    "build:bridge": "pnpm --filter @oa/bridge build",
+    "gen:protocol": "cd services/server && uv run python -m oa.protocol_gen ../../packages/protocol/src/index.ts"
+  }
+}

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: oa-api, namespace: openatoms }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: oa-api } }
+  template:
+    metadata:
+      annotations: { prometheus.io/scrape: "true", prometheus.io/port: "8000", prometheus.io/path: "/metrics" }
+      labels: { app: oa-api }
+    spec:
+      serviceAccountName: oa-sandbox-manager
+      # same uid as sandbox pods (images/sandbox `user`): both sides write workspaces on the shared PVC
+      securityContext: { runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000 }
+      containers:
+        - name: api
+          image: openatoms/server:latest
+          ports: [{ containerPort: 8000 }]
+          envFrom: [{ configMapRef: { name: oa-config } }, { secretRef: { name: oa-secrets } }]
+          readinessProbe: { httpGet: { path: /api/v1/health, port: 8000 }, periodSeconds: 5 }
+          volumeMounts: [{ name: ws, mountPath: /data }]
+          resources: { requests: { cpu: 500m, memory: 512Mi }, limits: { memory: 2Gi } }
+      volumes: [{ name: ws, persistentVolumeClaim: { claimName: oa-workspaces } }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: oa-api, namespace: openatoms }
+spec: { selector: { app: oa-api }, ports: [{ port: 8000, targetPort: 8000 }] }

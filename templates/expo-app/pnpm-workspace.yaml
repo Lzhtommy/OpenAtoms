@@ -1,0 +1,9 @@
+# Standalone project: stops pnpm from attaching to any ancestor workspace.
+packages:
+  - "."
+# Metro resolves through a flat node_modules (Expo's documented pnpm setup).
+nodeLinker: hoisted
+allowBuilds:
+  esbuild: true
+onlyBuiltDependencies:
+  - esbuild

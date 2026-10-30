@@ -1,0 +1,19 @@
+# Local observability stack: Prometheus (scrapes the host-run stack), Grafana (dashboard provisioned),
+# Jaeger (OTLP traces). Start: docker compose -f deploy/observability/docker-compose.observability.yml up -d
+# then run the stack with OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318.
+name: openatoms-obs
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes: ["./prometheus.yml:/etc/prometheus/prometheus.yml:ro", "./alerts.yml:/etc/prometheus/alerts.yml:ro"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["9090:9090"]
+  grafana:
+    image: grafana/grafana:latest
+    environment: { GF_AUTH_ANONYMOUS_ENABLED: "true", GF_AUTH_ANONYMOUS_ORG_ROLE: Admin }
+    volumes: ["./grafana/provisioning:/etc/grafana/provisioning:ro", "./grafana/dashboards:/var/lib/grafana/dashboards:ro"]
+    ports: ["3001:3000"]
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment: { COLLECTOR_OTLP_ENABLED: "true" }
+    ports: ["16686:16686", "4318:4318"]

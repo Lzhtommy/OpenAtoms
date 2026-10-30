@@ -1,0 +1,20 @@
+# Dev stand-in for the production RWX volume (JuiceFS/EFS): a hostPath PV on the kind node backed by the
+# host's OA_DATA_DIR, so the api (on the host) and sandbox pods see the same workspaces.
+apiVersion: v1
+kind: PersistentVolume
+metadata: { name: oa-workspaces-kind }
+spec:
+  capacity: { storage: 20Gi }
+  accessModes: [ReadWriteMany]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  hostPath: { path: /oa-data, type: Directory }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: { name: oa-workspaces, namespace: openatoms-sandboxes }
+spec:
+  accessModes: [ReadWriteMany]
+  storageClassName: ""
+  volumeName: oa-workspaces-kind
+  resources: { requests: { storage: 20Gi } }

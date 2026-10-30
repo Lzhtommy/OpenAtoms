@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens — semantic layer distilled from re/design-tokens.json (Atoms). */
+:root {
+  --beige-50: #fff;
+  --beige-100: #f6f6f6;
+  --beige-150: #f1f1f1;
+  --beige-200: #ebebea;
+  --beige-300: #e1e0e0;
+  --blue-300: #9ab4ff;
+  --blue-400: #7d9aff;
+  --blue-500: #4267ff;
+  --blue-600: #425ce1;
+
+  --bg: var(--beige-200);
+  --bg-2: var(--beige-100);
+  --bg-3: var(--beige-150);
+  --card: #ffffff;
+  --card-2: #fbfbfb;
+  --fg: rgba(12, 12, 12, 0.95);
+  --fg-2: rgba(12, 12, 12, 0.8);
+  --muted: rgba(12, 12, 12, 0.55);
+  --subtle: rgba(12, 12, 12, 0.3);
+  --line: rgba(12, 12, 12, 0.08);
+  --line-strong: rgba(12, 12, 12, 0.12);
+  --hover: rgba(12, 12, 12, 0.04);
+  --active: rgba(12, 12, 12, 0.07);
+  --inverse: #0c0c0c;
+  --inverse-fg: #ffffff;
+  --brand: var(--blue-500);
+  --brand-hover: var(--blue-600);
+  --brand-soft: rgba(61, 99, 255, 0.08);
+  --brand-soft-2: rgba(61, 99, 255, 0.14);
+  --danger: #c9444a;
+  --danger-soft: rgba(201, 68, 74, 0.1);
+  --positive: #41a35d;
+  --positive-soft: rgba(65, 163, 93, 0.12);
+  --warning: #d87a16;
+  --warning-soft: rgba(216, 122, 22, 0.12);
+  --purple: #895af6;
+  --pink: #e05ea0;
+  --shadow: 0 1px 2px rgba(12, 12, 12, 0.04), 0 4px 16px rgba(12, 12, 12, 0.04);
+  --shadow-lg: 0 8px 40px rgba(12, 12, 12, 0.12);
+
+  /* role colors */
+  --role-mike: rgb(255, 186, 108);
+  --role-emma: #e05ea0;
+  --role-bob: #4267ff;
+  --role-alex: rgb(43, 163, 255);
+  --role-david: rgb(45, 187, 92);
+  --role-iris: #895af6;
+  --role-sarah: rgb(196, 170, 120);
+  --role-adrian: #d87a16;
+
+  --scrollbar: #0c0c0c14;
+}
+
+.dark {
+  --bg: #121212;
+  --bg-2: #1b1b1c;
+  --bg-3: #202021;
+  --card: #1e1e1f;
+  --card-2: #232324;
+  --fg: rgba(255, 255, 255, 0.95);
+  --fg-2: rgba(255, 255, 255, 0.8);
+  --muted: rgba(255, 255, 255, 0.6);
+  --subtle: rgba(255, 255, 255, 0.35);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --hover: rgba(255, 255, 255, 0.05);
+  --active: rgba(255, 255, 255, 0.09);
+  --inverse: #f6f6f6;
+  --inverse-fg: #0c0c0c;
+  --brand-soft: rgba(110, 140, 255, 0.14);
+  --brand-soft-2: rgba(110, 140, 255, 0.22);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --scrollbar: #ffffff1c;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-card: var(--card);
+  --color-card-2: var(--card-2);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-hover: var(--hover);
+  --color-active: var(--active);
+  --color-inverse: var(--inverse);
+  --color-inverse-fg: var(--inverse-fg);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-2: var(--brand-soft-2);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-purple: var(--purple);
+  --color-pink: var(--pink);
+  --radius-xs: 4px;
+  --radius-s: 6px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --radius-xl: 16px;
+  --shadow-card: var(--shadow);
+  --shadow-pop: var(--shadow-lg);
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-plex-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  font-size: 14px;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+* {
+  border-color: var(--line);
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+@media (max-width: 768px) {
+  textarea,
+  input {
+    font-size: 16px !important;
+  }
+}
+
+/* markdown */
+.md {
+  line-height: 1.65;
+  word-break: break-word;
+}
+.md > * + * {
+  margin-top: 0.6em;
+}
+.md h1 { font-size: 1.4em; font-weight: 600; }
+.md h2 { font-size: 1.25em; font-weight: 600; }
+.md h3 { font-size: 1.1em; font-weight: 600; }
+.md ul { list-style: disc; padding-left: 1.4em; }
+.md ol { list-style: decimal; padding-left: 1.4em; }
+.md li + li { margin-top: 0.2em; }
+.md a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+.md code { font-family: var(--font-mono); font-size: 0.9em; background: var(--hover); padding: 1px 5px; border-radius: 4px; }
+.md pre { background: var(--bg-2); border: 1px solid var(--line); padding: 10px 12px; border-radius: 8px; overflow-x: auto; }
+.md pre code { background: transparent; padding: 0; }
+.md blockquote { border-left: 3px solid var(--line-strong); padding-left: 10px; color: var(--muted); }
+.md table { border-collapse: collapse; }
+.md th, .md td { border: 1px solid var(--line-strong); padding: 4px 8px; }
+.hljs-keyword, .hljs-built_in { color: #a347ba; }
+.hljs-string { color: #2f9c4e; }
+.hljs-number, .hljs-literal { color: #c56a1b; }
+.hljs-comment { color: var(--subtle); font-style: italic; }
+.hljs-title, .hljs-function { color: #3b6cf0; }
+
+@keyframes oa-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--hover) 0px, var(--active) 120px, var(--hover) 240px);
+  background-size: 800px 100%;
+  animation: oa-shimmer 1.4s infinite linear;
+}
+@keyframes oa-dot {
+  0%, 80%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+.typing-dot { animation: oa-dot 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }

@@ -1,0 +1,47 @@
+groups:
+  - name: openatoms
+    rules:
+      - alert: AgentRunFailureRateHigh
+        expr: |
+          sum(rate(oa_runs_finished_total{status="failed"}[15m]))
+            / clamp_min(sum(rate(oa_runs_finished_total{status=~"success|failed"}[15m])), 1e-9) > 0.10
+        for: 10m
+        labels: { severity: page }
+        annotations:
+          summary: "More than 10% of agent runs fail"
+          description: "Run failure ratio {{ $value | humanizePercentage }} over 15m. Check LLM gateway, sandbox starts, worker logs."
+      - alert: SandboxColdStartP95Slow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(oa_sandbox_start_seconds_bucket{kind="cold"}[15m]))) > 10
+        for: 15m
+        labels: { severity: ticket }
+        annotations:
+          summary: "Sandbox cold start P95 above 10s"
+          description: "P95 = {{ $value }}s. Check image pre-pull, node pressure, warm pool size (oa_sandbox_pool_ready)."
+      - alert: WarmPoolEmpty
+        expr: max(oa_sandbox_pool_ready) == 0 and sum(rate(oa_sandbox_pool_events_total{event="miss"}[10m])) > 0
+        for: 10m
+        labels: { severity: ticket }
+        annotations: { summary: "Warm pool exhausted — users get cold starts; raise OA_SANDBOX_WARM_POOL" }
+      - alert: Api5xxRateHigh
+        expr: |
+          sum(rate(oa_http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(oa_http_requests_total[5m])), 1e-9) > 0.02
+        for: 5m
+        labels: { severity: page }
+        annotations: { summary: "API 5xx ratio above 2%" }
+      - alert: Gateway5xxRateHigh
+        expr: |
+          sum(rate(oa_gateway_requests_total{status=~"5..",kind!="waking"}[5m]))
+            / clamp_min(sum(rate(oa_gateway_requests_total[5m])), 1e-9) > 0.05
+        for: 5m
+        labels: { severity: page }
+        annotations: { summary: "Gateway 5xx ratio above 5% (excluding wake pages)" }
+      - alert: SandboxAbuseDetected
+        expr: increase(oa_abuse_actions_total[10m]) > 0
+        labels: { severity: ticket }
+        annotations: { summary: "Sandbox abuse monitor acted ({{ $labels.reason }} → {{ $labels.action }})" }
+      - alert: LlmSpendSpike
+        expr: sum(rate(oa_llm_cost_usd_total[1h])) * 3600 > 50
+        for: 30m
+        labels: { severity: ticket }
+        annotations: { summary: "LLM spend above $50/hour" }

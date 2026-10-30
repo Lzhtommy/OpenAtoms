@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: oa-worker, namespace: openatoms }
+spec:
+  replicas: 3
+  selector: { matchLabels: { app: oa-worker } }
+  template:
+    metadata:
+      annotations: { prometheus.io/scrape: "true", prometheus.io/port: "9108", prometheus.io/path: "/metrics" }
+      labels: { app: oa-worker }
+    spec:
+      serviceAccountName: oa-sandbox-manager
+      # same uid as sandbox pods (images/sandbox `user`): both sides write workspaces on the shared PVC
+      securityContext: { runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000 }
+      containers:
+        - name: worker
+          image: openatoms/server:latest
+          command: ["arq", "oa.worker.WorkerSettings"]
+          envFrom: [{ configMapRef: { name: oa-config } }, { secretRef: { name: oa-secrets } }]
+          volumeMounts: [{ name: ws, mountPath: /data }]
+          resources: { requests: { cpu: 500m, memory: 512Mi }, limits: { memory: 2Gi } }
+      volumes: [{ name: ws, persistentVolumeClaim: { claimName: oa-workspaces } }]

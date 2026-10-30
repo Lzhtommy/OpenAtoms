@@ -1,0 +1,8 @@
+# Standalone project: stops pnpm from attaching to any ancestor workspace.
+packages:
+  - "."
+allowBuilds:
+  esbuild: true
+# pnpm <= 10
+onlyBuiltDependencies:
+  - esbuild

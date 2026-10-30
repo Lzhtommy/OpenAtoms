@@ -1,0 +1,15 @@
+# Scrapes the host-run dev stack (make dev / dev-full). In Kubernetes use the pod annotations in deploy/k8s
+# (prometheus.io/scrape) or a ServiceMonitor instead.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+rule_files: [/etc/prometheus/alerts.yml]
+scrape_configs:
+  - job_name: oa-api
+    metrics_path: /metrics
+    static_configs: [{ targets: ["host.docker.internal:8100"] }]
+  - job_name: oa-worker
+    static_configs: [{ targets: ["host.docker.internal:9108"] }]
+  - job_name: oa-gateway
+    metrics_path: /__oa/metrics
+    static_configs: [{ targets: ["host.docker.internal:8080"] }]

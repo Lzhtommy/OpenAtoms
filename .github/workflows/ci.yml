@@ -1,0 +1,43 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.23" }
+      - run: make test-go
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.23" }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: make sandboxd && (cd templates/react-shadcn-vite && pnpm install)
+      - run: cd services/server && uv sync && uv run ruff check oa && uv run pytest -q
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: pnpm }
+      - run: pnpm install --frozen-lockfile=false && pnpm build:bridge && pnpm build:web
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [go, server, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.23" }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: pnpm install && make install build
+      - run: make e2e

@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.ts",
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "dev": "CI=1 EXPO_NO_TELEMETRY=1 expo start --web --port ${PORT:-5173}",
+    "build": "EXPO_NO_TELEMETRY=1 expo export --platform web --output-dir dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~58.0.15",
+    "expo": "~58.0.21",
+    "expo-status-bar": "~58.0.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-web": "~0.21.4"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.0",
+    "typescript": "~5.9.2"
+  }
+}

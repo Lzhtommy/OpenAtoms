@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "App",
+    "slug": "app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "web": { "bundler": "metro", "output": "single" }
+  }
+}

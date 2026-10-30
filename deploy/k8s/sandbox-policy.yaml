@@ -1,0 +1,37 @@
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata: { name: gvisor }
+handler: runsc
+---
+# Sandboxes: ingress only from api/worker/gateway; egress to public internet but not cluster/private ranges.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: sandbox-isolation, namespace: openatoms-sandboxes }
+spec:
+  podSelector: { matchLabels: { app: oa-sandbox } }
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: openatoms } }
+  egress:
+    - to: [{ namespaceSelector: {}, podSelector: { matchLabels: { k8s-app: kube-dns } } }]
+      ports: [{ protocol: UDP, port: 53 }]
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10, 169.254.0.0/16]
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata: { name: sandbox-quota, namespace: openatoms-sandboxes }
+spec:
+  hard: { pods: "500", requests.cpu: "500", requests.memory: 1000Gi }
+---
+apiVersion: v1
+kind: LimitRange
+metadata: { name: sandbox-limits, namespace: openatoms-sandboxes }
+spec:
+  limits:
+    - type: Container
+      default: { cpu: "2", memory: 4Gi, ephemeral-storage: 10Gi }
+      defaultRequest: { cpu: 250m, memory: 512Mi }

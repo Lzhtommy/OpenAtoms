@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: oa-sandbox-manager, namespace: openatoms }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: { name: sandbox-manager, namespace: openatoms-sandboxes }
+rules:
+  - apiGroups: [""]
+    resources: [pods, services]
+    verbs: [get, list, watch, create, delete, patch]
+  - apiGroups: [""]
+    resources: [pods/log]
+    verbs: [get]
+  - apiGroups: [""]   # OA_K8S_ACCESS=portforward (out-of-cluster api, e.g. dev against kind)
+    resources: [pods/portforward]
+    verbs: [get, create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: { name: sandbox-manager, namespace: openatoms-sandboxes }
+subjects: [{ kind: ServiceAccount, name: oa-sandbox-manager, namespace: openatoms }]
+roleRef: { kind: Role, name: sandbox-manager, apiGroup: rbac.authorization.k8s.io }

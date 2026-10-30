@@ -1,0 +1,12 @@
+# Build context is the repo root; only what the Dockerfile copies is needed.
+*
+!services/sandboxd/go.mod
+!services/sandboxd/*.go
+!services/sandboxd/*.py
+!templates/react-shadcn-vite
+templates/react-shadcn-vite/node_modules
+templates/react-shadcn-vite/dist
+!templates/expo-app
+templates/expo-app/node_modules
+templates/expo-app/dist
+templates/expo-app/.expo

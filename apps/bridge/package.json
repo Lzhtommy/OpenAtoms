@@ -1,0 +1,15 @@
+{
+  "name": "@oa/bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Script injected by the OpenAtoms gateway into user apps (errors, console, routes, design selection, badge)",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  }
+}

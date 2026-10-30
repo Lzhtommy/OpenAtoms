@@ -1,0 +1,9 @@
+# Alternate host ports for running a second full-mode infra next to the default one, e.g. load tests / drills:
+#   docker compose -p oa-prod -f deploy/docker-compose.yml -f deploy/ports.alt.yml up -d postgres redis s3
+# then: OA_DATABASE_URL=postgresql+asyncpg://oa:oa@127.0.0.1:15432/oa OA_REDIS_URL=redis://127.0.0.1:16379/0
+#       OA_S3_ENDPOINT=http://127.0.0.1:19000
+services:
+  postgres: { ports: !override ["15432:5432"] }
+  redis: { ports: !override ["16379:6379"] }
+  s3: { ports: !override ["19000:7070"] }
+  mailpit: { ports: !override ["18026:8025", "11026:1025"] }
