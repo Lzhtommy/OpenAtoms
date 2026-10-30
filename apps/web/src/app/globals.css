@@ -14,16 +14,18 @@
   --blue-500: #4267ff;
   --blue-600: #425ce1;
 
-  --bg: var(--beige-200);
-  --bg-2: var(--beige-100);
-  --bg-3: var(--beige-150);
+  /* layering mirrors atoms.dev: sidebar beige-200 < canvas beige-100 < white surfaces */
+  --bg: var(--beige-100);
+  --bg-2: var(--beige-150);
+  --bg-3: var(--beige-200);
+  --sidebar: var(--beige-200);
   --card: #ffffff;
   --card-2: #fbfbfb;
   --fg: rgba(12, 12, 12, 0.95);
   --fg-2: rgba(12, 12, 12, 0.8);
   --muted: rgba(12, 12, 12, 0.55);
   --subtle: rgba(12, 12, 12, 0.3);
-  --line: rgba(12, 12, 12, 0.08);
+  --line: rgba(12, 12, 12, 0.06);
   --line-strong: rgba(12, 12, 12, 0.12);
   --hover: rgba(12, 12, 12, 0.04);
   --active: rgba(12, 12, 12, 0.07);
@@ -41,8 +43,8 @@
   --warning-soft: rgba(216, 122, 22, 0.12);
   --purple: #895af6;
   --pink: #e05ea0;
-  --shadow: 0 1px 2px rgba(12, 12, 12, 0.04), 0 4px 16px rgba(12, 12, 12, 0.04);
-  --shadow-lg: 0 8px 40px rgba(12, 12, 12, 0.12);
+  --shadow: 0 1px 2px rgba(12, 12, 12, 0.03);
+  --shadow-lg: 0 12px 48px -12px rgba(12, 12, 12, 0.14), 0 2px 6px rgba(12, 12, 12, 0.04);
 
   /* role colors */
   --role-mike: rgb(255, 186, 108);
@@ -58,11 +60,12 @@
 }
 
 .dark {
-  --bg: #121212;
-  --bg-2: #1b1b1c;
-  --bg-3: #202021;
+  --bg: #161617;
+  --bg-2: #1c1c1d;
+  --bg-3: #222223;
+  --sidebar: #0f0f10;
   --card: #1e1e1f;
-  --card-2: #232324;
+  --card-2: #252526;
   --fg: rgba(255, 255, 255, 0.95);
   --fg-2: rgba(255, 255, 255, 0.8);
   --muted: rgba(255, 255, 255, 0.6);
@@ -76,7 +79,7 @@
   --brand-soft: rgba(110, 140, 255, 0.14);
   --brand-soft-2: rgba(110, 140, 255, 0.22);
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 48px -12px rgba(0, 0, 0, 0.6);
   --scrollbar: #ffffff1c;
   color-scheme: dark;
 }
@@ -85,6 +88,7 @@
   --color-bg: var(--bg);
   --color-bg-2: var(--bg-2);
   --color-bg-3: var(--bg-3);
+  --color-sidebar: var(--sidebar);
   --color-card: var(--card);
   --color-card-2: var(--card-2);
   --color-fg: var(--fg);
@@ -114,15 +118,21 @@
   --radius-m: 8px;
   --radius-l: 12px;
   --radius-xl: 16px;
+  --radius-2xl: 24px;
   --shadow-card: var(--shadow);
   --shadow-pop: var(--shadow-lg);
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-plex-serif), ui-serif, Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 html {
   font-size: 14px;
+}
+/* Display headings: same family as body, tighter and heavier. Serif CJK fell back to Song and read as dated. */
+@utility font-display {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 body {
   background: var(--bg);
@@ -194,3 +204,15 @@ body {
 .typing-dot { animation: oa-dot 1.2s infinite; }
 .typing-dot:nth-child(2) { animation-delay: 0.15s; }
 .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* Entry motion: content rises into place once on load. Staggered with --d. */
+@keyframes oa-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: oa-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+}

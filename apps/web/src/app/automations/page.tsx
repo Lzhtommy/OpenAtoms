@@ -219,7 +219,7 @@ function Inner() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">
       <div className="mb-6 flex items-center gap-3">
-        <h1 className="font-serif text-[28px]">{t("automations")}</h1>
+        <h1 className="font-display text-[28px]">{t("automations")}</h1>
         <div className="flex-1" />
         <Button onClick={() => setCreating(true)}>
           <Plus className="h-3.5 w-3.5" /> {zh ? "新建" : "New automation"}

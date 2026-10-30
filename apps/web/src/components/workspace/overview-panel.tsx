@@ -35,7 +35,7 @@ export function OverviewPanel({ readOnly }: { readOnly?: boolean }) {
 
   return (
     <div className="h-full overflow-y-auto p-5">
-      <h2 className="font-serif text-[22px]">{chat.title}</h2>
+      <h2 className="font-display text-[22px]">{chat.title}</h2>
       <div className="mt-1 text-[12px] text-muted">
         Created {fmtDate(chat.created_at)} · updated {timeAgo(chat.updated_at)}
       </div>

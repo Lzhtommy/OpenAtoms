@@ -68,7 +68,7 @@ export default function Pricing() {
         </div>
       </header>
       <div className="mx-auto max-w-5xl px-6 pt-12 pb-24">
-        <h1 className="text-center font-serif text-[40px]">Simple, credit-based pricing</h1>
+        <h1 className="text-center font-display text-[40px]">Simple, credit-based pricing</h1>
         <p className="mt-2 text-center text-[14px] text-muted">Credits are consumed by LLM tokens and sandbox time. Upgrade or top up anytime.</p>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {plans.map((p) => (
@@ -78,7 +78,7 @@ export default function Pricing() {
                 {p.id === "pro" && <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] text-white">Popular</span>}
               </div>
               <div className="mt-3">
-                <span className="font-serif text-[36px]">${p.price_usd}</span>
+                <span className="font-display text-[36px]">${p.price_usd}</span>
                 <span className="text-[13px] text-muted"> / month</span>
               </div>
               <div className="mt-1 text-[13px] text-fg-2">{p.monthly_credits.toLocaleString()} credits / month</div>
@@ -102,7 +102,7 @@ export default function Pricing() {
             </div>
           ))}
         </div>
-        <h2 className="mt-16 text-center font-serif text-[26px]">Top up credits</h2>
+        <h2 className="mt-16 text-center font-display text-[26px]">Top up credits</h2>
         <div className="mx-auto mt-6 grid max-w-3xl gap-4 sm:grid-cols-3">
           {PACKS.map((p) => (
             <div key={p.id} className="rounded-xl border border-line bg-card p-5 text-center shadow-card">

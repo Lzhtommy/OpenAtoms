@@ -41,7 +41,7 @@ export function BoostPicker({
               if (!on) onChange([base, models.find((m) => m.id !== base)?.id ?? base]);
             }}
             className={cn(
-              "flex cursor-pointer items-center gap-1 rounded-full px-2 py-1 text-[12px] text-muted hover:bg-hover",
+              "flex h-8 cursor-pointer items-center gap-1 rounded-full px-2.5 text-[12px] text-muted transition-colors hover:bg-hover hover:text-fg",
               on && "bg-brand-soft text-brand",
             )}
             aria-pressed={on}

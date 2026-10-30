@@ -17,3 +17,4 @@ apps/gateway/bin/
 *.log
 .DS_Store
 re/
+config/kairos.pem

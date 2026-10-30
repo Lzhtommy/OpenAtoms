@@ -34,7 +34,7 @@ function Inner() {
   };
   return (
     <div className="mx-auto max-w-4xl px-6 py-8">
-      <h1 className="font-serif text-[28px]">{t("settings")}</h1>
+      <h1 className="font-display text-[28px]">{t("settings")}</h1>
       <div className="mt-5 flex flex-wrap gap-1 border-b border-line">
         {TABS.map((k) => (
           <button

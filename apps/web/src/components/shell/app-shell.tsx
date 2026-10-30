@@ -37,20 +37,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   if (!ready) return <FullPageLoader />;
   return (
-    <div className="flex h-screen overflow-hidden">
-      <aside className="hidden w-[248px] shrink-0 md:flex">
+    <div className="flex h-[100dvh] overflow-hidden bg-bg">
+      <aside className="hidden w-[256px] shrink-0 bg-sidebar md:flex">
         <Sidebar />
       </aside>
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMobileOpen(false)}>
           <div className="absolute inset-0 bg-black/30" />
-          <aside className="absolute top-0 left-0 h-full w-[260px] bg-bg" onClick={(e) => e.stopPropagation()}>
+          <aside className="absolute top-0 left-0 h-full w-[268px] bg-sidebar" onClick={(e) => e.stopPropagation()}>
             <Sidebar onNavigate={() => setMobileOpen(false)} />
           </aside>
         </div>
       )}
       <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="flex h-12 items-center gap-2 px-3 md:hidden">
+        <div className="flex h-12 items-center gap-2 border-b border-line px-3 md:hidden">
           <Button variant="ghost" size="icon-sm" onClick={() => setMobileOpen(true)}>
             <MenuIcon className="h-4 w-4" />
           </Button>
@@ -65,15 +65,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 export function useRecentChats(limit = 12) {
   const workspaceId = useAuth((s) => s.workspaceId);
   const [chats, setChats] = useState<Chat[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const load = () =>
     api
       .get<Page<Chat>>("/chats", { cur_page: 1, page_num: limit })
       .then((p) => setChats(p.items))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoaded(true));
   useEffect(() => {
     load();
   }, [workspaceId]);
-  return { chats, reload: load };
+  return { chats, loaded, reload: load };
 }
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -108,19 +110,19 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-1 px-3 py-3">
-      <div className="flex items-center justify-between px-1 pb-2">
+    <div className="flex h-full w-full flex-col gap-1 px-2.5 py-3">
+      <div className="flex items-center justify-between px-1.5 pb-3">
         <Link href="/dashboard" className="flex items-center gap-2" onClick={onNavigate}>
           <LogoMark />
-          <span className="text-[15px] font-semibold tracking-tight">OpenAtoms</span>
+          <span className="text-[16px] font-semibold tracking-tight">OpenAtoms</span>
         </Link>
         <PanelLeftClose className="hidden h-4 w-4 text-subtle" />
       </div>
 
       <Menu>
         <MenuTrigger asChild>
-          <button className="flex w-full items-center gap-2 rounded-l px-2 py-2 text-left hover:bg-hover">
-            <span className="flex h-6 w-6 items-center justify-center rounded-m bg-inverse text-[11px] font-semibold text-inverse-fg">
+          <button className="flex w-full cursor-pointer items-center gap-2 rounded-l border border-line bg-card/60 px-2 py-1.5 text-left transition-colors hover:bg-card">
+            <span className="flex h-6 w-6 items-center justify-center rounded-s bg-brand text-[11px] font-semibold text-white">
               {(ws?.name || "W").charAt(0).toUpperCase()}
             </span>
             <span className="min-w-0 flex-1">
@@ -156,7 +158,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         href="/dashboard"
         onClick={onNavigate}
-        className="mt-1 mb-1 flex items-center justify-center gap-1.5 rounded-full border border-line-strong bg-card py-1.5 text-[13px] font-medium hover:bg-hover"
+        className="my-2 flex h-9 items-center justify-center gap-1.5 rounded-full bg-inverse text-[13px] font-medium text-inverse-fg transition-[opacity,transform] hover:opacity-90 active:scale-[0.98]"
       >
         <Plus className="h-3.5 w-3.5" /> New project
       </Link>
@@ -168,17 +170,17 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             href={n.href}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-2.5 rounded-m px-2.5 py-1.5 text-[13px] text-fg-2 hover:bg-hover",
+              "flex h-9 items-center gap-2.5 rounded-l px-2.5 text-[14px] text-fg-2 transition-colors hover:bg-hover hover:text-fg",
               path.startsWith(n.href) && "bg-active font-medium text-fg",
             )}
           >
-            <n.icon className="h-4 w-4" />
+            <n.icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
             {n.label}
           </Link>
         ))}
       </nav>
 
-      <div className="mt-4 px-2.5 text-[11px] font-medium text-muted">{t("recent")}</div>
+      <div className="mt-5 mb-1 px-2.5 text-[12px] text-muted">{t("recent")}</div>
       <div className="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
         {chats.map((c) => (
           <Link
@@ -186,7 +188,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             href={`/chat/${c.chat_id}`}
             onClick={onNavigate}
             className={cn(
-              "truncate rounded-m px-2.5 py-1.5 text-[13px] text-fg-2 hover:bg-hover",
+              "truncate rounded-l px-2.5 py-2 text-[13px] text-fg-2 transition-colors hover:bg-hover hover:text-fg",
               path === `/chat/${c.chat_id}` && "bg-active text-fg",
             )}
           >
@@ -198,11 +200,14 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         href="/settings?tab=billing"
         onClick={onNavigate}
-        className="flex items-center gap-2 rounded-l border border-line bg-card px-3 py-2 text-[12px] hover:bg-hover"
+        className="mt-2 flex items-center gap-3 rounded-xl bg-card px-3 py-2.5 transition-colors hover:bg-card-2"
       >
-        <CreditCard className="h-3.5 w-3.5 text-brand" />
-        <span className="flex-1 text-fg-2">{t("credits")}</span>
-        <span className="font-semibold">{balance?.credits ?? "—"}</span>
+        <CreditCard className="h-[18px] w-[18px] text-fg-2" strokeWidth={1.75} />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[13px] font-medium">{t("credits")}</span>
+          <span className="block text-[11px] text-muted capitalize">{ws?.plan ?? "free"} plan</span>
+        </span>
+        <span className="text-[15px] font-semibold tabular-nums">{balance?.credits ?? "-"}</span>
       </Link>
 
       <div className="flex items-center gap-1 pt-1">
