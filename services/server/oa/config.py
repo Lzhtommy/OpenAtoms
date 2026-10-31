@@ -79,6 +79,9 @@ class Settings(BaseSettings):
     mail_from: str = "OpenAtoms <noreply@openatoms.local>"
 
     signup_credits: int = 500
+    # Return one-time auth tokens (password reset) in API responses so local dev works without a mailbox.
+    # Anyone who knows an email could then reset that account's password: never enable on a reachable deployment.
+    dev_expose_tokens: bool = False
 
     @cached_property
     def db_url(self) -> str:

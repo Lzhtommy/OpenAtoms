@@ -53,7 +53,7 @@ POST /user/refresh                                      → {access_token}
 POST /user/logout
 GET  /user/detail                                       → User
 PATCH /user/detail    {name?, avatar?}
-POST /user/pwd/forgot {email}   → 发送重置邮件（dev：写入日志 + data/outbox/*.eml；响应 data.dev_token 仅在 lite 模式返回）
+POST /user/pwd/forgot {email}   → 发送重置邮件（dev：写入日志 + data/outbox/*.eml；响应 data.dev_token 仅在 OA_DEV_EXPOSE_TOKENS=1 时返回，默认关闭，部署环境不得开启）
 POST /user/pwd/reset  {token, password}
 POST /user/activation {token}                           (邮箱验证)
 GET  /user/google/login → {url}；GET /user/google/callback?code= → 302 到 web /oauth/google?token=…   (未配置时 4400)

@@ -168,7 +168,7 @@ async def pwd_forgot(body: ForgotBody, session: AsyncSession = Depends(get_sessi
         await send_mail(user.email, "Reset your OpenAtoms password",
                         f"Reset your password: {settings.public_web_url}/password/reset?token={tok}\n"
                         "This link expires in 1 hour.")
-        if settings.is_lite:
+        if settings.dev_expose_tokens:
             data["dev_token"] = tok
     return ok(data)
 

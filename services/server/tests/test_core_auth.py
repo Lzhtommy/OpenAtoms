@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from oa.config import settings
 from tests.conftest import register_user
 
 
@@ -39,7 +40,8 @@ async def test_auth_errors(client):
     assert r.status_code == 422 and r.json()["code"] == 4400
 
 
-async def test_password_reset_and_verification(client, data_dir):
+async def test_password_reset_and_verification(client, data_dir, monkeypatch):
+    monkeypatch.setattr(settings, "dev_expose_tokens", True)
     u = await register_user(client)
     # verification mail landed in the outbox
     assert any(data_dir.joinpath("outbox").iterdir())
@@ -65,6 +67,14 @@ async def test_password_reset_and_verification(client, data_dir):
     # unknown email does not leak
     r = await client.post("/api/v1/user/pwd/forgot", json={"email": "nobody@example.com"})
     assert r.json()["code"] == 0 and "dev_token" not in r.json()["data"]
+
+
+async def test_password_forgot_hides_token_by_default(client):
+    # lite mode alone must not hand out reset tokens: on a reachable server that is an account takeover
+    assert settings.is_lite and not settings.dev_expose_tokens
+    u = await register_user(client)
+    r = await client.post("/api/v1/user/pwd/forgot", json={"email": u["email"]})
+    assert r.json()["code"] == 0 and "dev_token" not in (r.json()["data"] or {})
 
 
 async def test_google_not_configured(client):
