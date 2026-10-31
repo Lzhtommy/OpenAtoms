@@ -485,4 +485,5 @@ async def insert_rows(chat_id: str, env: str, table: str, rows: list[dict]) -> i
 
 ### 11.4 验证范围（详见 `docs/impl/verify.md`）
 - **已实测**：真实 Playwright（checkui）；真实 LLM 客户端经 HTTP 调用 OpenAI 兼容服务，含注入 503 重试和 LiteLLM；GitHub / Supabase / Stripe / Google 对接本地伪服务端；mailpit SMTP。
-- **需要真实账号才能验证**：模型 API key、各 OAuth 应用、Stripe 测试密钥、真实 SMTP。
+- **已用真实账号验证**：DeepSeek（`deepseek-flash`，5 个评测用例全部通过）、Google 登录、GitHub（OAuth 连接、建仓、推送）、Supabase（OAuth、关联项目）。
+- **仍需真实账号验证**：Stripe 测试密钥、真实 SMTP，以及其他模型供应商。

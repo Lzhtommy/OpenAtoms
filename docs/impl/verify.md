@@ -57,7 +57,19 @@ Provider endpoints are settings now: `OA_GITHUB_API_URL`, `OA_GITHUB_OAUTH_URL`,
 `docker run -p 18025:8025 -p 11025:1025 axllent/mailpit`; with SMTP pointed at it, verification, password-reset and
 workspace-invite emails are delivered (checked via the mailpit API) and the reset link from the delivered mail works.
 
+## 5. Verified with real accounts (2026-10-30)
+Evidence is in `data/oa.db` (`usage_events`, `users`, `integrations`) and `evals/results/`.
+- **DeepSeek** (`deepseek-flash` via `OA_LLM_BASE_URL=https://api.deepseek.com/v1`): `evals/run.py` cases pomodoro,
+  counter, landing (lite) and team-todo, guestbook-cloud (full, all 5 roles) all passed (build + checkui + content
+  expectations) — 225 completions, ~4.3M input / ~0.18M output tokens, 26–479 s per case. Three earlier attempts
+  failed: counter missed its content expectation, and landing and guestbook-cloud each failed within ~4 s because of the
+  environment, not the model; reruns passed. Note: `deepseek-flash` is not in `billing.PRICES`, so its recorded
+  `cost_usd` uses `DEFAULT_PRICE`, not DeepSeek's real pricing.
+- **Google login** with a real OAuth app: new user created with `email_verified` taken from Google.
+- **GitHub OAuth connect** with a real OAuth app: account linked and the token stored encrypted.
+- **GitHub repo create / push** against github.com and **Supabase OAuth + project link**: verified manually by the
+  project owner. These records are not in the current `data/oa.db`.
+
 ## Still requires the user's real accounts
-Real model quality/latency from Anthropic/OpenAI/DeepSeek/Moonshot keys; live OAuth apps for GitHub/Supabase/Google
-(redirect URIs registered with the providers); Stripe test-mode keys + a real webhook endpoint (e.g. `stripe listen`);
-a real SMTP/SES sender domain.
+Stripe test-mode keys + a real webhook endpoint (e.g. `stripe listen`); a real SMTP/SES sender domain; model quality
+at scale (all 20 eval cases, repeated runs, other providers such as Anthropic/OpenAI/Moonshot).
