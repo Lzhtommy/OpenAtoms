@@ -42,6 +42,11 @@ async def test_files_api(client, fake_runtime):
     # token via query works for download links
     z2 = await client.get(f"/api/v1/chats/{cid}/files/export?token={u['token']}")
     assert z2.status_code == 200
+    # non-ASCII titles must not break the latin-1 Content-Disposition header
+    await client.patch(f"/api/v1/chats/{cid}", headers=h, json={"title": "番茄钟 app"})
+    z3 = await client.get(f"/api/v1/chats/{cid}/files/export", headers=h)
+    assert z3.status_code == 200 and f'filename="{cid}.zip"' in z3.headers["content-disposition"]
+    assert "filename*=UTF-8''%E7%95%AA%E8%8C%84%E9%92%9F-app.zip" in z3.headers["content-disposition"]
     await client.delete(f"/api/v1/chats/{cid}/files?path=docs", headers=h)
     assert (await client.get(f"/api/v1/chats/{cid}/files?path=docs/prd.md", headers=h)).status_code == 404
 

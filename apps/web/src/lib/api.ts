@@ -113,7 +113,11 @@ export async function request<T = any>(path: string, opts: ReqOpts = {}, retried
     throw new ApiError(4401, "please relogin", 401);
   }
   if (opts.raw) {
-    if (!res.ok) throw new ApiError(res.status, res.statusText, res.status);
+    if (!res.ok) {
+      // statusText is empty over HTTP/2: prefer the envelope message, else the status code
+      const j = await res.json().catch(() => null);
+      throw new ApiError(j?.code ?? res.status, j?.message || res.statusText || `HTTP ${res.status}`, res.status);
+    }
     return res as unknown as T;
   }
   let json: any = null;

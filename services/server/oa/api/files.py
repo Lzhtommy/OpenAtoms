@@ -8,6 +8,7 @@ import os
 import shutil
 import zipfile
 from pathlib import Path
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
 from fastapi.responses import Response, StreamingResponse
@@ -192,5 +193,8 @@ async def export(chat: m.Chat = Depends(chat_guard("read"))):
         raise not_found("Workspace is empty")
     data = await asyncio.to_thread(_zip, root)
     fname = "".join(ch if ch.isalnum() or ch in "-_" else "-" for ch in chat.title)[:60] or chat.id
-    return StreamingResponse(io.BytesIO(data), media_type="application/zip",
-                             headers={"Content-Disposition": f'attachment; filename="{fname}.zip"'})
+    # Header values are latin-1: a CJK title in filename= raises and the export 500s. Send an ASCII fallback plus
+    # the real name as RFC 5987 filename*.
+    ascii_name = fname if fname.isascii() else chat.id
+    return StreamingResponse(io.BytesIO(data), media_type="application/zip", headers={
+        "Content-Disposition": f"attachment; filename=\"{ascii_name}.zip\"; filename*=UTF-8''{quote(fname + '.zip')}"})
